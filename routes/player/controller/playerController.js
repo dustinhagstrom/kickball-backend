@@ -52,13 +52,12 @@ const signup = async function (req, res, next) {
     let savedPlayer = await createdPlayer.save();
     await createPicData.save();
     await foundTeam.save();
-    res.json({ message: "success - user created", payload: savedPlayer });
+    res.json({ message: "user created" });
   } catch (e) {
     next(e);
   }
 };
 const login = async function (req, res, next) {
-  // const { errorObj } = res.locals;
   const { email, password } = req.body;
   try {
     let foundPlayer = await Player.findOne({ email: email });
@@ -85,15 +84,21 @@ const login = async function (req, res, next) {
             email: foundPlayer.email,
             username: foundPlayer.username,
           },
-          process.env.PRIVATE_JWT_KEY,
-          {
-            expiresIn: "1d",
-          }
+          process.env.PRIVATE_JWT_KEY
         );
+
+        res.cookie("jwt-cookie", jwtToken, {
+          expires: new Date(Date.now() + 3600000),
+          httpOnly: false,
+          secure: false,
+        });
 
         res.json({
           message: "success",
-          payload: jwtToken,
+          player: {
+            email: foundPlayer.email,
+            username: foundPlayer.username,
+          },
         });
       }
     }

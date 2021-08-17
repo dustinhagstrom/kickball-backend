@@ -1,6 +1,7 @@
 const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
+const passport = require("passport");
 
 //can install rateLimit ---- = require("express-rate-limit");
 
@@ -11,15 +12,25 @@ const ErrorMessageHandlerClass = require("./routes/utils/ErrorMessageHandlerClas
 const errorController = require("./routes/utils/errorController");
 const fakerController = require("./routes/utils/Faker");
 const picsRouter = require("./routes/profilePics/picsRouter");
+const playerPassportStrategy = require("./routes/utils/passport/PlayerPassport");
 
 const app = express();
 
 app.use(cors());
+app.use(passport.initialize());
+passport.use("jwt-player", playerPassportStrategy);
 
 console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === "development") {
   app.use(logger("dev"));
 }
+
+let originalUrl =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"
+    : "DEPLOY URL";
+
+app.use(cors({ origin: originalUrl, credentials: true }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
