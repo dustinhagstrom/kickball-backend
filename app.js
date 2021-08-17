@@ -20,7 +20,6 @@ const app = express();
 app.use(passport.initialize()); //this is passport middleware that is required to configure w/ express
 passport.use("jwt-player", playerPassportStrategy);
 
-console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === "development") {
   app.use(logger("dev"));
 }

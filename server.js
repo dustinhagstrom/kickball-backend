@@ -14,7 +14,6 @@ mongoose
     app.listen(port, () => {
       console.log(`Server connected on ${port}`);
       console.log("MONGODB CONNECTED");
-      console.log(__dirname);
     });
   })
   .catch((e) => {
