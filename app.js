@@ -16,8 +16,8 @@ const playerPassportStrategy = require("./routes/utils/passport/PlayerPassport")
 
 const app = express();
 
-app.use(cors());
-app.use(passport.initialize());
+// app.use(cors());
+app.use(passport.initialize()); //this is passport middleware that is required to configure w/ express
 passport.use("jwt-player", playerPassportStrategy);
 
 console.log(process.env.NODE_ENV);
@@ -30,7 +30,7 @@ let originalUrl =
     ? "http://localhost:3000"
     : "DEPLOY URL";
 
-app.use(cors({ origin: originalUrl, credentials: true }));
+app.use(cors({ origin: originalUrl, credentials: true })); //credentials must be set to true to pass header options from front end "handleAPIFetchCall func"
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

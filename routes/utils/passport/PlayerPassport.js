@@ -5,11 +5,14 @@ const Player = require("../../player/model/Player");
 
 const keys = process.env.PRIVATE_JWT_KEY;
 
+//the setup that follows is from passport-jwt documentation for example req with auth headers
 const jwtOptions = {};
 
-jwtOptions.jwtFromRequest = Extract.Extract.fromAuthHeaderAsBearerToken();
+jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 jwtOptions.secretOrKey = keys;
 
+//jwt auth strategy constructed by:
+// new JwtStrategy(options, verify);
 const playerJWTLoginStrategy = new JwtStrategy(
   jwtOptions,
   async (payload, done) => {
