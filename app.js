@@ -1,6 +1,7 @@
 const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const passport = require("passport");
 
 //can install rateLimit ---- = require("express-rate-limit");
@@ -15,7 +16,7 @@ const picsRouter = require("./routes/profilePics/picsRouter");
 const playerPassportStrategy = require("./routes/utils/passport/PlayerPassport");
 
 const app = express();
-
+app.use(cookieParser());
 // app.use(cors());
 app.use(passport.initialize()); //this is passport middleware that is required to configure w/ express
 passport.use("jwt-player", playerPassportStrategy);

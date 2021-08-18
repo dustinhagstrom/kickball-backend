@@ -32,4 +32,9 @@ router.delete("/delete-player-by-id/:id", deletePlayer);
 
 router.get("/get-player", jwtMiddleware, getPlayer);
 
+router.get("/logout", function (req, res) {
+  res.clearCookie("jwt-cookie"); //i don't actually think I need this portion b/c of "js-cookie npm" that deletes cookie on front-end.
+  res.send("Logged out!");
+});
+
 module.exports = router;

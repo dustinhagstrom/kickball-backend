@@ -21,7 +21,6 @@ const signup = async function (req, res, next) {
   ];
 
   const { firstName, lastName, username, email, password } = req.body;
-  // const { errorObj } = res.locals;
   try {
     let salt = await bcrypt.genSalt(12);
     let hashedPassword = await bcrypt.hash(password, salt);
@@ -49,7 +48,7 @@ const signup = async function (req, res, next) {
     foundTeam.teamPlayers.push(createdPlayer._id);
     createdPlayer.team.push(foundTeam._id);
     createdPlayer.pics.push(createPicData._id);
-    let savedPlayer = await createdPlayer.save();
+    await createdPlayer.save();
     await createPicData.save();
     await foundTeam.save();
     res.json({ message: "user created" });
@@ -89,8 +88,8 @@ const login = async function (req, res, next) {
 
         res.cookie("jwt-cookie", jwtToken, {
           expires: new Date(Date.now() + 3600000),
-          httpOnly: false,
-          secure: false,
+          httpOnly: false, //flags cookie to be accessible only by web server
+          secure: false, //marks cookie to be used with https only
         });
 
         res.json({
