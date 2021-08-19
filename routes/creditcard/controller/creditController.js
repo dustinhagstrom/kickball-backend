@@ -2,12 +2,10 @@ const Card = require("../model/Card");
 const Player = require("../../player/model/Player");
 
 async function createCard(req, res, next) {
-  const { decodedJwt } = res.locals;
-
   const { cardNumber, firstName, lastName, expDate, code } = req.body;
   try {
     let foundPlayer = await Player.findOne({
-      email: decodedJwt.email,
+      email: req.user.email,
     });
     const newCard = new Card({
       cardNumber,

@@ -159,8 +159,11 @@ const deletePlayer = async function (req, res, next) {
 
 const getPlayer = async function (req, res, next) {
   try {
-    const { decodedJwt } = res.locals;
-    const foundPlayer = await Player.findOne({ email: decodedJwt.email });
+    // const { decodedJwt } = res.locals;
+    console.log("here");
+    console.log(req.user.email);
+    console.log("there");
+    const foundPlayer = await Player.findOne({ email: req.user.email });
     res.json({ message: "success", payload: foundPlayer });
   } catch (e) {
     next(e);
