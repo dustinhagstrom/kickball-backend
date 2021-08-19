@@ -9,7 +9,7 @@ const keys = process.env.PRIVATE_JWT_KEY;
 const jwtOptions = {};
 
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-jwtOptions.secretOrKey = keys;
+jwtOptions.secretOrKey = keys; //can be buffer or string
 
 //jwt auth strategy constructed by:
 // new JwtStrategy(options, verify);

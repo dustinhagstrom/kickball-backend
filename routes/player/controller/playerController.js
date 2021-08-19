@@ -133,9 +133,11 @@ const deletePlayer = async function (req, res, next) {
   try {
     let { id } = req.params;
     let deletedPlayer = await Player.findByIdAndRemove(id);
-    let deletedCard = await Card.findByIdAndRemove({
-      _id: deletedPlayer.card[0],
-    });
+    if (deletedPlayer.card[0]) {
+      await Card.findByIdAndRemove({
+        _id: deletedPlayer.card[0],
+      });
+    }
     let foundTeam = await Team.findById({ _id: deletedPlayer.team[0] });
     let filteredTeam = foundTeam.teamPlayers.filter(
       (teamMember) => teamMember.toString() !== deletedPlayer._id.toString() //the .toString() is needed here or else does not work!!!
@@ -148,7 +150,7 @@ const deletePlayer = async function (req, res, next) {
     }); //delete the profile image
     res.json({
       message: "success",
-      payload: [deletedPlayer, deletedCard, foundTeam, filteredTeam],
+      payload: [deletedPlayer, foundTeam, filteredTeam],
     });
   } catch (e) {
     next(e);
