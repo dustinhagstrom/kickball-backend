@@ -82,22 +82,17 @@ router.get(
       let teamMemberArray = [];
       let teamMemberImagesArray = [];
       let teamPlayer = await Player.findOne({ email: req.user.email });
-      console.log(teamPlayer.team[0]);
       let foundOurTeam = await Team.findById({
         _id: teamPlayer.team[0],
       });
-      console.log("83");
       for (const id of foundOurTeam.teamPlayers) {
         let findPlayerForPicsData = await Player.findById({ _id: id }).select(
           "-email -password -__v -username -card"
         );
-        console.log("----------");
-        console.log(findPlayerForPicsData);
         if (findPlayerForPicsData.pics[0]) {
           let foundPics = await Pics.findById({
             _id: findPlayerForPicsData.pics[0],
           });
-          console.log(foundPics);
           teamMemberImagesArray.push(foundPics.img);
         }
         teamMemberArray.push(findPlayerForPicsData);

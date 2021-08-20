@@ -17,15 +17,12 @@ const playerJWTLoginStrategy = new JwtStrategy(
   jwtOptions,
   async (payload, done) => {
     const playerEmail = payload.email;
-    console.log(playerEmail);
 
     try {
       if (playerEmail) {
         const player = await Player.findOne({ email: playerEmail }).select(
           "-password"
         );
-
-        console.log(player);
 
         if (!player) {
           return done(null, false);

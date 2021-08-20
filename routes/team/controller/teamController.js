@@ -8,7 +8,6 @@ const loadTeam = async function (req, res, next) {
     let payload = await Team.findById({ _id: id }).select(
       "-_id -__v -teamPlayers"
     );
-    console.log(payload);
     res.json({ payload });
   } catch (e) {
     next(e);

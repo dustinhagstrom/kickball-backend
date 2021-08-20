@@ -9,19 +9,22 @@ const Pics = require("../../profilePics/model/Pics");
 const Card = require("../../creditcard/model/Card");
 
 const signup = async function (req, res, next) {
-  let teamNames = [
-    "Ball Sharks",
-    // "Nice Kicks",
-    // "The Trolls",
-    // "The Wizards",
-    // "Unicorn Kickers",
-    // "The Bunters",
-    // "The Karens",
-    // "The Fireballs",
-  ];
+  // let teamNames = [
+  //   "Ball Sharks",
+  //   // "Nice Kicks",
+  //   // "The Trolls",
+  //   // "The Wizards",
+  //   // "Unicorn Kickers",
+  //   // "The Bunters",
+  //   // "The Karens",
+  //   // "The Fireballs",
+  // ];
 
   const { firstName, lastName, username, email, password } = req.body;
   try {
+    let foundAllTeams = await Team.find({}).select("-__v -_id -teamPlayers");
+    let allTheTeamNamesArray = [];
+    foundAllTeams.forEach((team) => allTheTeamNamesArray.push(team.teamName));
     let salt = await bcrypt.genSalt(12);
     let hashedPassword = await bcrypt.hash(password, salt);
 
@@ -39,18 +42,19 @@ const signup = async function (req, res, next) {
       lastName,
       username,
       email,
+      isTeamCaptain: false,
       password: hashedPassword,
     });
-    let myRando = Math.floor(Math.random() * 1);
-    let foundTeam = await Team.findOne({
-      teamName: teamNames[myRando],
-    });
-    foundTeam.teamPlayers.push(createdPlayer._id);
-    createdPlayer.team.push(foundTeam._id);
+    // let myRando = Math.floor(Math.random() * allTheTeamNamesArray.length);
+    // let foundTeam = await Team.findOne({
+    //   teamName: allTheTeamNamesArray[myRando],
+    // });
+    // foundTeam.teamPlayers.push(createdPlayer._id);
+    // createdPlayer.team.push(foundTeam._id);
     createdPlayer.pics.push(createPicData._id);
     await createdPlayer.save();
     await createPicData.save();
-    await foundTeam.save();
+    // await foundTeam.save();
     res.json({ message: "user created" });
   } catch (e) {
     next(e);
@@ -60,6 +64,7 @@ const login = async function (req, res, next) {
   const { email, password } = req.body;
   try {
     let foundPlayer = await Player.findOne({ email: email });
+    console.log(foundPlayer.team[0]);
 
     if (!foundPlayer) {
       res.status(400).json({
@@ -82,6 +87,8 @@ const login = async function (req, res, next) {
           {
             email: foundPlayer.email,
             username: foundPlayer.username,
+            isTeamCaptain: foundPlayer.isTeamCaptain,
+            isOnATeam: foundPlayer.team[0] ? true : false,
           },
           process.env.PRIVATE_JWT_KEY
         );
@@ -97,6 +104,8 @@ const login = async function (req, res, next) {
           player: {
             email: foundPlayer.email,
             username: foundPlayer.username,
+            isTeamCaptain: foundPlayer.isTeamCaptain,
+            isOnATeam: foundPlayer.team[0] ? true : false,
           },
         });
       }
@@ -160,9 +169,6 @@ const deletePlayer = async function (req, res, next) {
 const getPlayer = async function (req, res, next) {
   try {
     // const { decodedJwt } = res.locals;
-    console.log("here");
-    console.log(req.user.email);
-    console.log("there");
     const foundPlayer = await Player.findOne({ email: req.user.email });
     res.json({ message: "success", payload: foundPlayer });
   } catch (e) {

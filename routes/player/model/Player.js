@@ -15,6 +15,9 @@ const PlayerSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
+  isTeamCaptain: {
+    type: Boolean,
+  },
   pics: [
     {
       type: mongoose.Schema.ObjectId,

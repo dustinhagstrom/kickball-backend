@@ -93,7 +93,6 @@ router.post(
         __dirname,
         `../../uploads/fakerpics/${ourPng}`
       ); // this is the location in my files where the pic will go
-      console.log(profileImagePath);
       //the following reads the data in local directory of the fake
       //profile image and the uses Pics schema to make new instance
       //of an image for storage to db
@@ -115,6 +114,7 @@ router.post(
         lastName: fakeLastName,
         username: fakeUsername,
         email: fakeEmail,
+        isTeamCaptain: false,
         password: hashedPassword,
       });
 
