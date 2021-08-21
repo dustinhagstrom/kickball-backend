@@ -3,7 +3,18 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 
-const { loadTeam, createNewTeam } = require("./controller/teamController");
+const {
+  loadTeam,
+  getAllTeams,
+  createNewTeam,
+  joinATeam,
+} = require("./controller/teamController");
+
+router.get(
+  "/get-team-list",
+  passport.authenticate("jwt-player", { session: false }),
+  getAllTeams
+);
 
 router.get(
   "/get-team/:id",
@@ -12,4 +23,10 @@ router.get(
 );
 
 router.post("/create-team", createNewTeam);
+
+router.put(
+  "/join-team",
+  passport.authenticate("jwt-player", { session: false }),
+  joinATeam
+);
 module.exports = router;
