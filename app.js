@@ -14,6 +14,7 @@ const errorController = require("./routes/utils/errorController");
 const fakerController = require("./routes/utils/Faker");
 const picsRouter = require("./routes/profilePics/picsRouter");
 const playerPassportStrategy = require("./routes/utils/passport/PlayerPassport");
+const mailRouter = require("./routes/mailjet/mailjetRouter");
 
 const app = express();
 app.use(cookieParser());
@@ -35,6 +36,7 @@ app.use(cors({ origin: originalUrl, credentials: true })); //credentials must be
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use("/api/mail", mailRouter);
 app.use("/api/faker", fakerController);
 app.use("/api/player", playerRouter);
 app.use("/api/team", teamRouter);
