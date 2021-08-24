@@ -8,6 +8,7 @@ const {
   getAllTeams,
   createNewTeam,
   joinATeam,
+  quitATeam,
 } = require("./controller/teamController");
 
 router.get(
@@ -28,5 +29,11 @@ router.put(
   "/join-team",
   passport.authenticate("jwt-player", { session: false }),
   joinATeam
+);
+
+router.put(
+  "/quit-team",
+  passport.authenticate("jwt-player", { session: false }),
+  quitATeam
 );
 module.exports = router;

@@ -62,4 +62,21 @@ const joinATeam = async function (req, res, next) {
     next(e);
   }
 };
-module.exports = { loadTeam, getAllTeams, createNewTeam, joinATeam };
+
+const quitATeam = async function (req, res, next) {
+  const { teamName, email } = req.body;
+
+  try {
+    let foundTeam = await Team.findOne({ teamName: teamName });
+    let foundPlayer = await Player.findOne({ email: email });
+    foundPlayer.team.pop();
+    let playerIndex = foundTeam.teamPlayers.indexOf(foundPlayer._id);
+    foundTeam.teamPlayers.splice(playerIndex, 1);
+    await foundPlayer.save();
+    await foundTeam.save();
+    res.json({ message: "success", payload: [foundPlayer, foundTeam] });
+  } catch (e) {
+    next(e);
+  }
+};
+module.exports = { loadTeam, getAllTeams, createNewTeam, joinATeam, quitATeam };

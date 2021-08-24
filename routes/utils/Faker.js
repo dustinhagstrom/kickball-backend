@@ -64,7 +64,7 @@ router.post(
   async function (req, res, next) {
     let teamNames = [
       //make this a dynamic get req for teams from db in future
-      "Ball Sharks",
+      // "Ball Sharks",
       // "Nice Kicks",
       // "The Trolls",
       // "The Wizards",
@@ -73,6 +73,7 @@ router.post(
       // "The Karens",
       // "The Fireballs",
     ];
+
     const { fakeFirstName, fakeLastName } = res.locals;
 
     const fakeCardNumber = faker.finance.creditCardNumber();
@@ -126,9 +127,12 @@ router.post(
         code: fakeCode,
       });
 
-      let myRando = Math.floor(Math.random() * 1);
-
-      let foundTeam = await Team.findOne({ teamName: teamNames[myRando] });
+      let foundAllTeams = await Team.find({}).select("-__v -_id -teamPlayers");
+      let allTheTeamNamesArray = [];
+      foundAllTeams.forEach((team) => allTheTeamNamesArray.push(team.teamName));
+      let randomIndex = Math.floor(Math.random() * allTheTeamNamesArray.length);
+      let randomTeam = allTheTeamNamesArray[randomIndex];
+      let foundTeam = await Team.findOne({ teamName: randomTeam });
 
       createPlayerData.team.push(foundTeam._id);
       createPlayerData.card.push(createCCData._id);
