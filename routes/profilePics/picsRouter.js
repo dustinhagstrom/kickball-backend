@@ -41,8 +41,9 @@ router.post(
 
       let foundPlayer = await Player.findOne({ email: req.user.email });
       if (foundPlayer.pics.length > 1) {
-        foundPlayer.pics.shift(); //delete the old user photo from db and keep default img.
-        await Pics.findByIdAndRemove({ _id: foundPlayer.pics[0] });
+        // foundPlayer.pics.splice(0, 1);
+        let picToGetGone = foundPlayer.pics.shift(); //delete the old user photo from db and keep default img.
+        await Pics.findByIdAndRemove({ _id: picToGetGone });
       }
 
       foundPlayer.pics.unshift(newPic._id); //push new id to player data
@@ -62,12 +63,18 @@ router.get(
     try {
       let imageToSend = await Player.findOne({ email: req.user.email });
       if (imageToSend.pics[0]) {
+        foundPlayer = imageToSend._id; //serve up user id for use in front end
+        console.log(foundPlayer);
         foundUserImage = await Pics.findById({ _id: imageToSend.pics[0] });
       } else {
         foundUserImage = undefined;
       }
 
-      res.json({ message: "success", payload: foundUserImage });
+      res.json({
+        message: "success",
+        payload: foundUserImage,
+        foundPlayer: foundPlayer,
+      });
     } catch (e) {
       next(e);
     }

@@ -7,6 +7,7 @@ const mailjet = require("node-mailjet").connect(
 );
 
 router.post("/send-practice-email", function (req, res) {
+  let userEmail = req.body.emailInput;
   const request = mailjet.post("send", { version: "v3.1" }).request({
     Messages: [
       {
@@ -16,7 +17,7 @@ router.post("/send-practice-email", function (req, res) {
         },
         To: [
           {
-            Email: "dustin.hagstrom@codeimmersives.com",
+            Email: userEmail,
             Name: "dustin",
           },
         ],

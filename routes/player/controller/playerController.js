@@ -147,19 +147,27 @@ const deletePlayer = async function (req, res, next) {
         _id: deletedPlayer.card[0],
       });
     }
-    let foundTeam = await Team.findById({ _id: deletedPlayer.team[0] });
-    let filteredTeam = foundTeam.teamPlayers.filter(
-      (teamMember) => teamMember.toString() !== deletedPlayer._id.toString() //the .toString() is needed here or else does not work!!!
-    );
-    console.log(filteredTeam);
-    foundTeam.teamPlayers = filteredTeam;
-    await foundTeam.save();
-    await Pics.findByIdAndRemove({
-      _id: deletedPlayer.pics[0],
-    }); //delete the profile image
+    if (deletedPlayer.team[0]) {
+      let foundTeam = await Team.findById({ _id: deletedPlayer.team[0] });
+      let filteredTeam = foundTeam.teamPlayers.filter(
+        (teamMember) => teamMember.toString() !== deletedPlayer._id.toString() //the .toString() is needed here or else does not work!!!
+      );
+      console.log(filteredTeam);
+      foundTeam.teamPlayers = filteredTeam;
+      await foundTeam.save();
+    }
+
+    if (deletedPlayer.pics) {
+      let picArrayLength = deletedPlayer.pics.length;
+      for (let i = 0; i < picArrayLength; i++) {
+        await Pics.findByIdAndRemove({
+          _id: deletedPlayer.pics[i],
+        }); //delete the profile image(s)
+      }
+    }
+
     res.json({
       message: "success",
-      payload: [deletedPlayer, foundTeam, filteredTeam],
     });
   } catch (e) {
     next(e);
